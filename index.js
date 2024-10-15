@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const postRoutes = require("./routes/PostRoute");
 const feedRoutes = require("./routes/FeedRoute");
+const userRoutes = require('./routes/UserRoute'); 
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 app.use("/api/posts", postRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/story&notes", require("./routes/StoryNotesRoutes"));
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
