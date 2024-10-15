@@ -2,9 +2,42 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/PostSchema');
 
-// ... other user routes ...
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Post management
+ */
 
-// Route to create a new post
+/**
+ * @swagger
+ * /api/posts/create-post:
+ *   post:
+ *     summary: Create a new post
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *               caption:
+ *                 type: string
+ *             required:
+ *               - userId
+ *               - imageUrl
+ *               - caption
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       500:
+ *         description: Error creating post
+ */
 router.post('/create-post', async (req, res) => {
   try {
     const { userId, imageUrl, caption } = req.body;

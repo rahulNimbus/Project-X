@@ -5,9 +5,35 @@ const feedRoutes = require("./routes/FeedRoute");
 const userRoutes = require('./routes/UserRoute'); 
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 require("dotenv").config();
 
 const app = express();
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Social Media API',
+      version: '1.0.0',
+      description: 'API documentation for a social media application',
+      contact: {
+        name: "Your Name",
+        email: "your-email@example.com"
+      },
+      servers: [
+        {
+          url: `http://localhost:8000`,
+        },
+      ],
+    },
+  },
+  apis: ['./routes/*.js'], // Adjust the path as needed
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Middleware to parse JSON bodies
 
