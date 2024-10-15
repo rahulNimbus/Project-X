@@ -3,6 +3,34 @@ const router = express.Router();
 const User = require('../models/UserSchema');
 const Post = require('../models/PostSchema');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Feed
+ *   description: Feed management
+ */
+
+/**
+ * @swagger
+ * /api/feed/home-feed/{userId}:
+ *   get:
+ *     summary: Get home feed for a user
+ *     tags: [Feed]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful response with recent posts
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error fetching home feed
+ */
 router.get('/home-feed/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
