@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/PostSchema');
+const User = require('../models/UserSchema'); // Assuming you have a User model to validate userId
 
 /**
  * @swagger
@@ -35,17 +36,25 @@ const Post = require('../models/PostSchema');
  *     responses:
  *       201:
  *         description: Post created successfully
+ *       400:
+ *         description: Invalid userId
  *       500:
  *         description: Error creating post
  */
 router.post('/create-post', async (req, res) => {
   try {
     const { userId, imageUrl, caption } = req.body;
-    
+
+    // Validate if userId exists in the User collection
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid userId' });
+    }
+
     const newPost = new Post({
       image: imageUrl,
       caption: caption,
-      owner: userId
+      user: userId // Change `owner` to `user`
     });
 
     const savedPost = await newPost.save();
@@ -55,5 +64,6 @@ router.post('/create-post', async (req, res) => {
     res.status(500).json({ message: 'Error creating post', error: error.message });
   }
 });
+
 
 module.exports = router;

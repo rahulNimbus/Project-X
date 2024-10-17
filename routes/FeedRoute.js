@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/UserSchema');
 const Post = require('../models/PostSchema');
+const mongoose = require('mongoose');
 
 /**
  * @swagger
@@ -42,14 +43,14 @@ router.get('/home-feed/:userId', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Get the list of users the current user is following
-    const followingIds = currentUser.following;
+    // Get the list of users the current user is following and ensure ObjectId type
+    const followingIds = currentUser.following.map(id => new mongoose.Types.ObjectId(id));
 
     // Find the most recent post for each followed user
     const recentPosts = await Post.aggregate([
       {
         $match: {
-          owner: { $in: followingIds }
+          user: { $in: followingIds } // Changed 'owner' to 'user' to match the schema
         }
       },
       {
@@ -57,7 +58,7 @@ router.get('/home-feed/:userId', async (req, res) => {
       },
       {
         $group: {
-          _id: '$owner',
+          _id: '$user', // Group by 'user' instead of 'owner'
           post: { $first: '$$ROOT' }
         }
       },
@@ -67,7 +68,7 @@ router.get('/home-feed/:userId', async (req, res) => {
       {
         $lookup: {
           from: 'users',
-          localField: 'owner',
+          localField: 'user', // Changed from 'owner' to 'user'
           foreignField: '_id',
           as: 'ownerDetails'
         }
